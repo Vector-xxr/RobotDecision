@@ -258,7 +258,9 @@ class Rig:
         else:
             from atom_robot.ar5.drivers.cameras import OpenCVCameras
             cc = AR5Config(mock=False).cameras
-            cc.sources = {"cam_high": CAM_TOP, "cam_front": CAM_WRIST, "cam_side": CAM_SIDE}
+            # 两台 Orbbec 明确走 V4L2（「v4l2:」前缀）：atom_robot 默认把 Orbbec 改走 OBSENSOR，
+            # 但腕部 305 走 OBSENSOR 一帧不出；本项目的像素标定也是按 V4L2 的 640×480 画面做的。
+            cc.sources = {"cam_high": "v4l2:" + CAM_TOP, "cam_front": "v4l2:" + CAM_WRIST, "cam_side": CAM_SIDE}
             self.hand = ih.InspireHand6(port=HAND_PORT, couple_index_thumb=True)
             self.cams = OpenCVCameras(cc)
         self.rows = []
