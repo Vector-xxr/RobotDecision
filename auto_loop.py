@@ -209,7 +209,7 @@ def run(args):
     g = plan["i_grasp"]
     R_g = plan["T"][g][:3, :3]
     floor = plan["P"][g, 2] - 10.0 if args.floor is None else args.floor
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
     q_home = np.asarray(AR5Config(mock=True).arm.home_joints, float)
     seq, why = takeoff_plan(kin, q_home, R_g, args.start)
     if seq is None:

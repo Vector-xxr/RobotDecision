@@ -77,7 +77,7 @@ class Kin:
 
 
 def rc_cfg_arm():
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
     return AR5Config(mock=True).arm
 
 

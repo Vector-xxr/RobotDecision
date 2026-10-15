@@ -92,7 +92,7 @@ def main():
     ap.add_argument("--photo-every", type=int, default=0, help="转动途中每隔几度拍一次（0 = 只在转到头时拍）")
     args = ap.parse_args()
 
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
     kin = CL.Kin()
     q_home = np.asarray(AR5Config(mock=True).arm.home_joints, float)
     T0 = kin.fk(q_home)

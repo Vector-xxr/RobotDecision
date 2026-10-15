@@ -57,7 +57,7 @@ def main():
     ap.add_argument("--auto", action="store_true")
     args = ap.parse_args()
 
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
     kin = CL.Kin()
     q_home = np.asarray(AR5Config(mock=True).arm.home_joints, float)
     T0 = kin.fk(q_home)

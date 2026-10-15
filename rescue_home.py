@@ -5,7 +5,7 @@ import sys, argparse, numpy as np
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import replay_capture as rc, closed_loop as CL, auto_loop2 as L
-from experiments.robot.ar5.config import AR5Config
+from atom_robot.ar5.config import AR5Config
 ap = argparse.ArgumentParser(); ap.add_argument("--go", action="store_true"); args = ap.parse_args()
 kin = CL.Kin(); q_home = np.asarray(AR5Config(mock=True).arm.home_joints, float)
 T0 = kin.fk(q_home); R0, p_home = T0[:3, :3], T0[:3, 3] * 1000

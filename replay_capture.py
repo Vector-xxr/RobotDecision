@@ -57,7 +57,7 @@ def _find_workspace() -> Path:
 
 WS = _find_workspace()
 VR = WS / "数据_硬件" / "灵巧手遥操" / "VR设备"
-AR5_ROOT = str(WS / "算法" / "VEL" / "vel_ar5" / "openvla-energy")
+AR5_ROOT = str(WS / "数据_硬件" / "SO101")   # atom_robot 所在：10-15 起 AR5 驱动和 SO101 共用一份
 sys.path.insert(0, str(VR))
 sys.path.insert(0, AR5_ROOT)
 
@@ -237,8 +237,8 @@ class FakeCams:
 
 class Rig:
     def __init__(self, args, out_dir):
-        from experiments.robot.ar5.ar5_env import AR5Env
-        from experiments.robot.ar5.config import AR5Config
+        from atom_robot.ar5.ar5_env import AR5Env
+        from atom_robot.ar5.config import AR5Config
         import inspire_hand6 as ih
 
         self.args, self.out = args, out_dir
@@ -256,7 +256,7 @@ class Rig:
                                         couple_index_thumb=True)
             self.cams = FakeCams()
         else:
-            from experiments.robot.ar5.drivers.cameras import OpenCVCameras
+            from atom_robot.ar5.drivers.cameras import OpenCVCameras
             cc = AR5Config(mock=False).cameras
             cc.sources = {"cam_high": CAM_TOP, "cam_front": CAM_WRIST, "cam_side": CAM_SIDE}
             self.hand = ih.InspireHand6(port=HAND_PORT, couple_index_thumb=True)
@@ -372,7 +372,7 @@ class Rig:
 
 
 def run(args):
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
 
     plan = make_plan(args)
     cfg_arm = AR5Config(mock=True).arm

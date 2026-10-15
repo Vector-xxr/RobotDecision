@@ -220,7 +220,7 @@ def dry_plan(kin, q_home, R0, spot, floor):
 
 # ── 主流程 ───────────────────────────────────────────────────────────────
 def run(args):
-    from experiments.robot.ar5.config import AR5Config
+    from atom_robot.ar5.config import AR5Config
     kin = CL.Kin()
     q_home = np.asarray(AR5Config(mock=True).arm.home_joints, float)
     T0 = kin.fk(q_home)
