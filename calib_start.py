@@ -17,7 +17,9 @@
             合手、看手指读数、张手、抬回 → 夹得住的那些 = 环；它们的中心 = 抓取点（转腕就绕这一点转）
   6 验证    手对准套筒后绕抓取点转 −15°、−30°，套筒在腕部画面里应该几乎不动
   7 回起始位
-结果写到 RobotDecision/calib_start.json（auto_loop 之后读它），原始图在 ~/atom_episodes/robotdecision_calib/
+结果写到 RobotDecision/calib_start.json，原始图在 ~/atom_episodes/robotdecision_calib/。
+**目前没有脚本读这个文件**：auto_loop.py 用示教朝向和 eval_decisions.py 里的常量，auto_loop2.py 用写在自己文件里的
+J0、PINCH_PX、PIVOT0。真机也从没完整产出过它（10-13 那次 9 次合手全空），见 README「标定链」。
 
     python calib_start.py --dry-run
     python calib_start.py --mock

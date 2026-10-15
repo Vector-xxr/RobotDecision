@@ -133,7 +133,7 @@ PYTHONPATH= ~/miniforge3/envs/laya/bin/python auto_loop.py             # 真跑
 - 仓库里只有拍照的脚本（`replay_capture.py`、`grid_capture.py`）。从照片量像素、拟合 `WRIST_J` 那一步当时用的是临时脚本和目测，没进仓库；重标要自己算，再改上表的常量。
 - 套筒换个位置不用重标：运行时不检测套筒，标定量的是相机和手。但示教朝向下能抓的范围有限，见「已知问题」。
 - 10-14 复现前重拍过回放（`robotdecision_replay/20261014_091440`）和网格（`robotdecision_grid/20261014_092937`），按当时的核对记录三项都和 10-13 一致，常量没改（本次没重算）。
-- `calib_start.py` 是给去示教版准备的「起始朝向」标定。**真机从来没完整产出过 `calib_start.json`**：10-13 15:00 那次 9 次合手全空，只在输出目录写了 `calib_start_无环.json`；之后两次没跑完。仓库里也没有这个文件。`auto_loop.py` 不读它（脚本开头写的「auto_loop 之后读它」是过时说法）；`auto_loop2.py` 也不读，用的是写在自己文件里的 `J0`、`PINCH_PX`、`PIVOT0`。
+- `calib_start.py` 是给去示教版准备的「起始朝向」标定。**真机从来没完整产出过 `calib_start.json`**：10-13 15:00 那次 9 次合手全空，只在输出目录写了 `calib_start_无环.json`；之后两次没跑完。仓库里也没有这个文件。`auto_loop.py` 不读它；`auto_loop2.py` 也不读，用的是写在自己文件里的 `J0`、`PINCH_PX`、`PIVOT0`。
 
 ## 脚本地图
 
