@@ -1,0 +1,1 @@
+{"ms": 709.8239920014748, "input_tokens": 1186, "answers": {"sleeve_visible": {"name": "sleeve_visible", "probability": 1.0, "type": "predicate"}, "holding": {"name": "holding", "probability": 0.95, "type": "predicate"}}}
