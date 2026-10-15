@@ -52,7 +52,7 @@
 **依赖的别处代码**，按文件位置往上找工作区根自动找到（单独拷走时设环境变量 `YUHANG_WS`）：
 - `数据_硬件/SO101/atom_robot`：AR5 驱动、相机驱动；
 - `数据_硬件/灵巧手遥操/VR设备`：直接 import 它的 `ar5_poe_ik.py`（自己的逆解）和 `inspire_hand6.py`（手的 Modbus 驱动）；
-- `~/atom_episodes/robotdecision_grid/` 下至少一个不带 `_mock` 的目录：`near_tests.py` 一被导入就去找它，而 `closed_loop.py` 导入了它。没有这个目录的话，凡是导入 `closed_loop` 的脚本（`auto_loop*`、`closed_loop`、`calib_start`、`axis_look`、`touch_test`、`rescue_home`、`run_with_model`）连 `--dry-run` 都起不来（`IndexError`）。
+- `~/atom_episodes/robotdecision_grid/` 下至少一个不带 `_mock` 的目录，否则连 `--dry-run` 都起不来。见下面「换机器时要改的两处代码」第 1 条。
 
 **1. 臂在起始位**（和 atom_robot 配置里的 `home_joints` 每个关节差 ≤3°，否则报「臂不在起始位」退出）：
 
@@ -94,6 +94,29 @@ PYTHONPATH= ~/miniforge3/envs/laya/bin/python auto_loop.py             # 真跑
 - 提示后**输入 `yes` 回车**才开始。别用 `echo yes |` 喂：标准输入不是终端时，q 急停不起作用。
 - 运行中**按 `q` 急停**：走完当前一小步就停，臂停在原地，手保持当前状态（夹着的不会松）。别按 Ctrl+C；结束时断开臂可能要约 1 分钟，这时也别按。
 - 参数：`--start X Y Z`（起步点，mm）、`--floor`（法兰下限，mm）、`--speed`（MoveAbsJ 速度参数，默认 100）、`--out`（默认 `~/atom_episodes/robotdecision_auto`）。
+
+## 换机器时要改的两处代码
+
+10-15 用户定：这两处在本机不改，换机器、重写相关代码时一并处理。
+
+**1. `near_tests.py` 一被导入就去找网格照片目录，找不到就报错**
+
+- 现象：`near_tests.py` 第 32 行在文件顶层执行
+  `GRID = sorted(...(Path.home() / "atom_episodes/robotdecision_grid").glob("2026*") ...)[-1]`。
+  新机器上没有这个目录（或者只有 `_mock` 目录）时列表为空，`[-1]` 抛 `IndexError`。
+- 影响：`closed_loop.py` 导入了 `near_tests`，而 `auto_loop*`、`closed_loop`、`calib_start`、`axis_look`、`touch_test`、`rescue_home`、`run_with_model` 都导入了 `closed_loop`，所以这些脚本全都起不来，连 `--dry-run` 也不行。
+- 抓取本身用不到这批照片：`closed_loop.py` 从 `near_tests` 只借了提问文字（`A1_TEXT`、`A1_Q`、`A2_RINGS_TEXT`、`A2_RINGS_Q`）、内圈半径 `INNER_R` 和 `img_url()`。`GRID` 只在 `near_tests.py` 自己的实验函数里用（第 61、153、220 行）。
+- 改法：把找目录挪进真正用到它的函数里，比如写成函数 `grid_dir()`，第一次调用时再找；找不到时报一句说清楚缺哪个目录。改完后，没有这个目录时 `auto_loop.py --dry-run` 也应该能跑。抓取行为不变。
+- 不改代码的临时办法：把本机的 `~/atom_episodes/robotdecision_grid/20261014_092937` 一起拷过去（取的是排序最后、不带 `_mock` 的那个）。
+
+**2. `auto_loop.py` 调接口出错时直接退出，臂停在半路**
+
+- 现象：每一步都要调 OpenAI 的决策接口。`auto_loop.py` 只对限流重试。碰上服务端出错（503）、连不上、超时，异常会被最外层的 `except Exception`（第 424 行）接住，结果记成「出错」，然后**跳过收尾**直接断开：臂停在原地（可能低低地挨着套筒，也可能正夹着套筒悬在半空），手保持当前状态，要人用 `rescue_home.py` 或手动处理。
+- 真碰到过：10-13 `auto_loop2.py` 换位置重跑到第 55 步，决策接口回了 503（「Decision inference is unavailable」），臂停在套筒旁的低处。
+- 改法：照搬 `auto_loop2.py` 的做法（`ApiDown` 和 `make_decider` 里的 `robust`，约第 246~265 行；收尾在第 661 行起）：
+  - 把 `CL.make_decider` 包一层，捕获 `InternalServerError`、`APIConnectionError`、`APITimeoutError`，分别等 3、6、12、24、30、30 秒重试，约 2 分钟；
+  - 还不行就抛 `ApiDown`，主循环接住后按正常流程收尾：夹着就放下、张手、回起始位。
+- 只在出错时才走到这段，正常抓取的每一步不受影响。改完用模拟运行验证：在假模型里故意抛这几种异常，看能不能重试成功，以及重试用完后能不能正常收尾。
 
 ## 标定链
 
@@ -232,7 +255,7 @@ $PY eval_decisions.py --dry                            # 要有 ~/atom_episodes/
 - **侧面 UGREEN 时好时坏**：10-15 下午出过全黑画面，是设备自身问题。黑了就拔插一次。
 - **不要同时启动 RobotJev**：它会让腕部 305 走 OBSENSOR，弄得连 V4L2 也不出帧，只能物理重插。
 - **俯视箭头起点仍和示教有关**：`TOP_MAP` 来自回放示教时拍的照片。它属于相机标定，换成任意臂位姿拍的照片也能重标。
-- **接口出错没有重试**：`auto_loop.py` 只对限流重试；接口回 503 或断网时直接「出错」退出，臂停在原地（可能在套筒旁的低处，或正夹着）。`auto_loop2.py` 加了约 2 分钟的退避重试和正常收尾，没移植过来。
+- **接口出错没有重试**：接口回 503 或断网时直接退出，臂停在半路。见「换机器时要改的两处代码」第 2 条。
 - **重问很多**：正倒序答案常不一致，验收那次 102 步里 35 步是重问。
 
 ## 相关文档
