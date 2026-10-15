@@ -52,7 +52,7 @@ def _find_workspace() -> Path:
     for p in HERE.parents:
         if (p / "算法").is_dir() and (p / "数据_硬件").is_dir():
             return p
-    return HERE.parents[2]   # 找不到就按现在的层级（算法/Jev/DecisionAPI）推
+    return HERE.parents[2]   # 找不到就按现在的层级（算法/Jev/RobotDecision）推
 
 
 WS = _find_workspace()
