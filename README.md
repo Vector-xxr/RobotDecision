@@ -9,6 +9,12 @@
 
 下面的命令除非另写了 `cd`，都在本目录下、用 conda 环境 `laya` 跑，写法和 [工作区说明](../../../工作区说明.md) 一致。
 
+> [!NOTE]
+> **放在 GitHub 上要知道的**：这个仓库原本是一个更大工作区里的项目（`<工作区>/算法/Jev/RobotDecision/`），单独克隆跑不起来。
+> - 依赖仓库外的 `atom_robot`（AR5 驱动和相机驱动，在原工作区 `数据_硬件/SO101/`，没有公开），以及 [VisionPro_teleop_DexterousHand](https://github.com/Vector-xxr/VisionPro_teleop_DexterousHand)（要克隆到 `<工作区>/数据_硬件/灵巧手遥操/`，本项目导入它 `VR设备/` 下的 `ar5_poe_ik.py`、`inspire_hand6.py`，回位用它的 `home_arm.py`）。找它们的方式是从文件位置往上找工作区根，或者设环境变量 `YUHANG_WS`。
+> - 运行记录和标定照片在 `~/atom_episodes/`，不在仓库里；调模型要自己的 OpenAI 密钥（`~/.config/openai/key`）。
+> - 文中指向 `../../../工作区说明.md`、`../RobotJev` 等的链接是原工作区里的其他项目，在这里打不开（RobotJev 也已公开：[Vector-xxr/RobotJev](https://github.com/Vector-xxr/RobotJev)）。
+
 ## 认定方案：auto_loop.py
 
 1. **起步**（固定动作，不问模型）：从起始位竖直抬到 z340，再把位置和朝向一起插值到 `--start`（默认法兰 (380, −300, 330) mm、示教抓取朝向）。
