@@ -57,7 +57,7 @@ def _find_workspace() -> Path:
 
 WS = _find_workspace()
 VR = WS / "数据_硬件" / "灵巧手遥操" / "VR设备"
-AR5_ROOT = str(WS / "数据_硬件" / "SO101")   # atom_robot 所在：10-15 起 AR5 驱动和 SO101 共用一份
+AR5_ROOT = str(WS / "算法" / "DexGraspVLA-" / "SO101")   # atom_robot 所在：10-15 起 AR5 驱动和 SO101 共用一份
 sys.path.insert(0, str(VR))
 sys.path.insert(0, AR5_ROOT)
 

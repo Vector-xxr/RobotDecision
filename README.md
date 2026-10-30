@@ -11,7 +11,7 @@
 
 > [!NOTE]
 > **放在 GitHub 上要知道的**：这个仓库原本是一个更大工作区里的项目（`<工作区>/算法/Jev/RobotDecision/`），单独克隆跑不起来。
-> - 依赖仓库外的 `atom_robot`（AR5 驱动和相机驱动，在原工作区 `数据_硬件/SO101/`，没有公开），以及 [VisionPro_teleop_DexterousHand](https://github.com/Vector-xxr/VisionPro_teleop_DexterousHand)（要克隆到 `<工作区>/数据_硬件/灵巧手遥操/`，本项目导入它 `VR设备/` 下的 `ar5_poe_ik.py`、`inspire_hand6.py`，回位用它的 `home_arm.py`）。找它们的方式是从文件位置往上找工作区根，或者设环境变量 `YUHANG_WS`。
+> - 依赖仓库外的 `atom_robot`（AR5 驱动和相机驱动，在原工作区 `算法/DexGraspVLA-/SO101/`，没有公开），以及 [VisionPro_teleop_DexterousHand](https://github.com/Vector-xxr/VisionPro_teleop_DexterousHand)（要克隆到 `<工作区>/数据_硬件/灵巧手遥操/`，本项目导入它 `VR设备/` 下的 `ar5_poe_ik.py`、`inspire_hand6.py`，回位用它的 `home_arm.py`）。找它们的方式是从文件位置往上找工作区根，或者设环境变量 `YUHANG_WS`。
 > - 运行记录和标定照片在 `~/atom_episodes/`，不在仓库里；调模型要自己的 OpenAI 密钥（`~/.config/openai/key`）。
 > - 文中指向 `../../../工作区说明.md`、`../RobotJev` 等的链接是原工作区里的其他项目，在这里打不开（RobotJev 也已公开：[Vector-xxr/RobotJev](https://github.com/Vector-xxr/RobotJev)）。
 
@@ -56,7 +56,7 @@
 ## 跑之前
 
 **依赖的别处代码**，按文件位置往上找工作区根自动找到（单独拷走时设环境变量 `YUHANG_WS`）：
-- `数据_硬件/SO101/atom_robot`：AR5 驱动、相机驱动；
+- `算法/DexGraspVLA-/SO101/atom_robot`：AR5 驱动、相机驱动；
 - `数据_硬件/灵巧手遥操/VR设备`：直接 import 它的 `ar5_poe_ik.py`（自己的逆解）和 `inspire_hand6.py`（手的 Modbus 驱动）；
 - `~/atom_episodes/robotdecision_grid/` 下至少一个不带 `_mock` 的目录，否则连 `--dry-run` 都起不来。见下面「换机器时要改的两处代码」第 1 条。
 
@@ -268,5 +268,5 @@ $PY eval_decisions.py --dry                            # 要有 ~/atom_episodes/
 
 - [工作区说明](../../../工作区说明.md)：工作区结构、conda 环境、约定、迁移。
 - [RobotJev](../RobotJev/README.md)：本项目的前身（Laya / PlayJev + 现场测量的抓取流程）。
-- [atom_robot](../../../数据_硬件/SO101/atom_robot)：AR5 驱动和相机驱动，全工作区只有这一份。
+- [atom_robot](../../DexGraspVLA-/SO101/atom_robot)：AR5 驱动和相机驱动，全工作区只有这一份。
 - [VR 遥操](../../../数据_硬件/灵巧手遥操/VR设备/README.md)：示教轨迹（`avp_servoj_teleop.py --traj-hz`）和回位脚本 `home_arm.py` 的来源；本项目直接 import 它的 `ar5_poe_ik.py`、`inspire_hand6.py`。
